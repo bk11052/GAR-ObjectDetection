@@ -49,8 +49,8 @@ gcr:
 
 training:
   # Two-stage (4, 6) strategy
-  stage1_epochs: 4         # Faster R-CNN backbone only
-  stage2_epochs: 6         # Joint training with GAR
+  stage1_epochs: 5         # Faster R-CNN backbone only (논문: two-stage (5,5))
+  stage2_epochs: 5         # Joint training with GAR
   stage1_lr: 5.0e-4
   stage2_lr: 5.0e-5
   batch_size: 1            # Faster R-CNN은 보통 batch=1

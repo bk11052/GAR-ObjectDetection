@@ -142,7 +142,7 @@ python train.py --stage 1
 | 항목 | 값 |
 |------|------|
 | Learning Rate | 5e-4 |
-| Epochs | 4 |
+| Epochs | 5 |
 | Batch Size | 1 |
 | 학습 대상 | backbone + RPN + box_head + box_predictor |
 | 동결 | scene_detector, gcr, scene_node_embed |
@@ -162,7 +162,7 @@ python train.py --stage 2 --resume checkpoints/stage1_best.pth
 | 항목 | 값 |
 |------|------|
 | Learning Rate | 5e-5 |
-| Epochs | 6 |
+| Epochs | 5 |
 | 학습 대상 | rpn + box_head + box_predictor + gcr + scene_node_embed |
 | 동결 | backbone (VGG-16 conv), scene_detector |
 
