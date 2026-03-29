@@ -131,7 +131,7 @@ python utils/cooccurrence.py \
 
 ---
 
-### Step 2. Stage 1 학습 — Faster R-CNN 백본 (4 epochs)
+### Step 2. Stage 1 학습 — Faster R-CNN 백본 (5 epochs)
 
 GCR 모듈 없이 기본 Faster R-CNN만 학습합니다.
 
@@ -151,7 +151,7 @@ python train.py --stage 1
 
 ---
 
-### Step 3. Stage 2 학습 — GAR 전체 (6 epochs)
+### Step 3. Stage 2 학습 — GAR 전체 (5 epochs)
 
 Stage 1 가중치를 로드한 뒤, GCR 그래프 추론 모듈을 포함하여 joint 학습합니다.
 
