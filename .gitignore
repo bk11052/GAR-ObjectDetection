@@ -1,0 +1,30 @@
+# Data (대용량 파일)
+data/VOCdevkit/
+data/cooccurrence/
+*.tar
+*.tar.gz
+
+# Checkpoints
+checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model weights cache
+~/.cache/places365/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

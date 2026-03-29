@@ -1,0 +1,72 @@
+# GAR Configuration for PASCAL VOC 2007
+
+dataset:
+  name: voc2007
+  root: data/VOCdevkit
+  num_classes: 20  # VOC 20 object classes
+  # VOC class names (index 0~19)
+  class_names:
+    - aeroplane
+    - bicycle
+    - bird
+    - boat
+    - bottle
+    - bus
+    - car
+    - cat
+    - chair
+    - cow
+    - diningtable
+    - dog
+    - horse
+    - motorbike
+    - person
+    - pottedplant
+    - sheep
+    - sofa
+    - train
+    - tvmonitor
+
+model:
+  backbone: vgg16          # Faster R-CNN backbone
+  pretrained: true         # ImageNet pretrained
+  num_proposals: 300       # RPN NMS 후 ROI 수 (N)
+  roi_feature_dim: 4096    # ROI feature 차원 (VGG-16 FC 출력)
+
+scene_detector:
+  # Places365 VGG-16 pretrained 가중치 (코드 내 자동 다운로드)
+  places365_weights_url: "http://places2.csail.mit.edu/models_places365/vgg16_places365.pt"
+  num_indoor_outdoor: 2    # indoor / outdoor
+  num_place_categories: 365
+  num_scene_attributes: 102
+  total_scene_dim: 469     # 2 + 365 + 102
+
+gcr:
+  K: 3                     # Top-K place/attribute scene nodes
+  num_scene_nodes: 8       # S = 2 + 2*K = 2 + 2*3 = 8
+  gcn_hidden_dim: 4096     # GCN layer 1 출력 차원
+  gcn_output_dim: 512      # GCN layer 2 출력 차원
+
+training:
+  # Two-stage (4, 6) strategy
+  stage1_epochs: 4         # Faster R-CNN backbone only
+  stage2_epochs: 6         # Joint training with GAR
+  stage1_lr: 5.0e-4
+  stage2_lr: 5.0e-5
+  batch_size: 1            # Faster R-CNN은 보통 batch=1
+  num_workers: 4
+  weight_decay: 5.0e-4
+  momentum: 0.9
+  gpu: 0                   # GPU 0 사용
+
+  # Checkpoint 저장 경로
+  checkpoint_dir: checkpoints/
+  save_every: 1            # 매 epoch 저장
+
+cooccurrence:
+  # 공출현 행렬 저장 경로
+  save_dir: data/cooccurrence/
+  obj_obj_file: obj_obj_voc2007.npy
+  obj_inout_file: obj_inout_voc2007.npy
+  obj_place_file: obj_place_voc2007.npy
+  obj_attr_file: obj_attr_voc2007.npy

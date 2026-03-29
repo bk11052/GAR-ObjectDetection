@@ -1,0 +1,14 @@
+services:
+  gar:
+    build: .
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+      - ./data:/workspace/data
+      - ./checkpoints:/workspace/checkpoints
+      - ~/.cache/places365:/root/.cache/places365
+    shm_size: '8g'
+    stdin_open: true
+    tty: true
+    command: bash

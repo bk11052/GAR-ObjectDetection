@@ -1,0 +1,9 @@
+data/VOCdevkit/
+data/cooccurrence/
+checkpoints/
+*.tar
+*.tar.gz
+__pycache__/
+*.pyc
+.git/
+.gitignore
