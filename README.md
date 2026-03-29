@@ -38,6 +38,11 @@ GAR-ObjectDetection/
 │   └── cooccurrence.py       # 공출현 행렬 오프라인 계산
 ├── train.py                  # Two-stage 학습 스크립트
 ├── evaluate.py               # VOC 2007 mAP 평가 스크립트
+├── visualize/
+│   ├── vis_cooccurrence.py   # 공출현 행렬 히트맵
+│   ├── vis_graph.py          # GCR 그래프 구조 시각화
+│   └── vis_detection.py      # 탐지 결과 비교 시각화
+├── outputs/                  # (git 제외) 시각화 결과 저장
 ├── data/                     # (git 제외) 데이터셋 저장 위치
 │   ├── VOCdevkit/VOC2007/
 │   └── cooccurrence/         # 계산된 공출현 행렬 (.npy)
@@ -192,6 +197,61 @@ mAP                     76.10%
 
 ---
 
+## 시각화
+
+학습 완료 후 3가지 시각화를 생성합니다. 모두 **컨테이너 안에서** 실행합니다.
+
+### 공출현 행렬 히트맵
+
+객체-객체, 객체-실내외, 객체-장소, 객체-속성 관계를 히트맵으로 시각화합니다.
+
+```bash
+python visualize/vis_cooccurrence.py --cooc_dir data/cooccurrence/ --output_dir outputs/
+```
+
+**결과물**:
+- `outputs/cooc_obj_obj.png` — 20x20 객체-객체 공출현 히트맵
+- `outputs/cooc_obj_inout.png` — 20x2 객체-실내/실외 히트맵
+- `outputs/cooc_obj_place_top10.png` — 가장 빈번한 장소 10개와의 관계
+- `outputs/cooc_obj_attr_top10.png` — 가장 빈번한 속성 10개와의 관계
+
+### GCR 그래프 구조
+
+특정 이미지에 대한 GCR 모듈의 이종 그래프를 시각화합니다.
+파란 원은 객체 노드, 초록 사각형은 장면 노드입니다.
+
+```bash
+python visualize/vis_graph.py \
+    --checkpoint checkpoints/stage2_best.pth \
+    --image data/VOCdevkit/VOC2007/JPEGImages/000001.jpg \
+    --output_dir outputs/
+```
+
+**결과물**: `outputs/graph_000001.png` (원본 이미지 + 그래프 구조 나란히)
+
+### 객체 탐지 결과 비교
+
+Stage 1(Baseline)과 Stage 2(GAR)의 탐지 결과를 나란히 비교합니다.
+
+```bash
+# Baseline vs GAR 비교 (10장 랜덤)
+python visualize/vis_detection.py \
+    --checkpoint_s1 checkpoints/stage1_best.pth \
+    --checkpoint_s2 checkpoints/stage2_best.pth \
+    --output_dir outputs/ \
+    --num_images 10
+
+# GAR 결과만 보기
+python visualize/vis_detection.py \
+    --checkpoint_s2 checkpoints/stage2_best.pth \
+    --output_dir outputs/ \
+    --num_images 10
+```
+
+**결과물**: `outputs/detection_000001.png` ... (이미지별 bbox + 클래스 + confidence score)
+
+---
+
 ## 핵심 아키텍처 요약
 
 ```
@@ -228,6 +288,11 @@ python utils/cooccurrence.py                                          # Step 1 (
 python train.py --stage 1                                             # Step 2
 python train.py --stage 2 --resume checkpoints/stage1_best.pth       # Step 3
 python evaluate.py --checkpoint checkpoints/stage2_best.pth --stage 2 # Step 4
+
+# 시각화
+python visualize/vis_cooccurrence.py                                  # 공출현 행렬 히트맵
+python visualize/vis_graph.py --checkpoint checkpoints/stage2_best.pth --image data/VOCdevkit/VOC2007/JPEGImages/000001.jpg  # 그래프
+python visualize/vis_detection.py --checkpoint_s1 checkpoints/stage1_best.pth --checkpoint_s2 checkpoints/stage2_best.pth    # 탐지 비교
 
 # 컨테이너 나가기
 exit

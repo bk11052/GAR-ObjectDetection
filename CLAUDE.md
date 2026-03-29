@@ -87,6 +87,28 @@ Image → VGG-16 backbone → feature map (512, H/32, W/32)
 ### Co-occurrence Matrices
 Raw counts stored as `.npy`. Row-wise softmax normalization happens at runtime inside `GCRModule`.
 
+## Visualization
+
+```bash
+# Co-occurrence heatmaps (공출현 행렬 계산 후 실행 가능)
+python visualize/vis_cooccurrence.py
+
+# GCR graph structure (Stage 2 checkpoint 필요)
+python visualize/vis_graph.py --checkpoint checkpoints/stage2_best.pth --image <image_path>
+
+# Detection comparison: baseline vs GAR (양쪽 checkpoint 필요)
+python visualize/vis_detection.py --checkpoint_s1 checkpoints/stage1_best.pth --checkpoint_s2 checkpoints/stage2_best.pth
+```
+
+All outputs go to `outputs/` (gitignored). Uses `matplotlib` Agg backend (no display needed).
+
+### Key Files
+| File | Output |
+|---|---|
+| `visualize/vis_cooccurrence.py` | 4 heatmap PNGs (obj-obj, obj-inout, obj-place, obj-attr) |
+| `visualize/vis_graph.py` | Image + graph side-by-side (instance=blue circle, scene=green square) |
+| `visualize/vis_detection.py` | Baseline vs GAR bbox comparison per image |
+
 ## Known Limitations
 1. `SceneDetector` fc_inout and fc_attr heads are randomly initialized (Places365 only covers 365-class place head).
 2. `_compute_losses` uses simplified proposal-GT matching (not torchvision's full `roi_heads` matcher).

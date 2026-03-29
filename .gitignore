@@ -7,6 +7,9 @@ data/cooccurrence/
 # Checkpoints
 checkpoints/
 
+# Visualization outputs
+outputs/
+
 # Python
 __pycache__/
 *.py[cod]
