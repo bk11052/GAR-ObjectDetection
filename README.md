@@ -51,9 +51,7 @@ GAR-ObjectDetection/
 ### 1. 서버에서 레포 클론
 
 ```bash
-cd ~/Gachon/kyu216/GAR
 git clone https://github.com/bk11052/GAR-ObjectDetection.git
-cd GAR-ObjectDetection
 ```
 
 ### 2. VOC 2007 데이터셋 다운로드
@@ -91,7 +89,7 @@ docker compose build
 
 ```bash
 # GAR-ObjectDetection 폴더에서 실행
-cd ~/Gachon/kyu216/GAR/GAR-ObjectDetection
+cd GAR/GAR-ObjectDetection
 
 # 컨테이너 bash 셸 진입 (GPU 0 자동 할당)
 docker compose run --rm gar bash
@@ -222,7 +220,7 @@ mAP                     76.10%
 
 ```bash
 # Docker 컨테이너 진입
-cd ~/Gachon/kyu216/GAR/GAR-ObjectDetection
+cd GAR/GAR-ObjectDetection
 docker compose run --rm gar bash
 
 # 컨테이너 안에서 전체 파이프라인
