@@ -347,7 +347,7 @@ class GARDetector(nn.Module):
             props_exp = props.unsqueeze(1).expand_as(bd_reshaped)  # (N, C+1, 4)
             boxes = self.box_coder.decode(
                 bd_reshaped.reshape(-1, 4),
-                props_exp.reshape(-1, 4),
+                [props_exp.reshape(-1, 4)],
             ).view(N, -1, 4)  # (N, C+1, 4)
 
             # Clip to image
