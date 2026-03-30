@@ -107,17 +107,14 @@ class SceneDetector(nn.Module):
         print(f"[SceneDetector] Loaded. Missing: {len(missing)}, Unexpected: {len(unexpected)}")
 
     def _try_load_places365_auto(self):
-        """Auto-download Places365 VGG-16 weights."""
+        """Auto-download Places365 VGG-16 weights (Caffe→PyTorch conversion)."""
         cache_path = os.path.expanduser("~/.cache/places365/vgg16_places365.pt")
         if not os.path.exists(cache_path):
-            os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-            print(f"[SceneDetector] Downloading Places365 weights → {cache_path}")
             try:
-                import urllib.request
-                urllib.request.urlretrieve(PLACES365_VGG16_URL, cache_path)
-                print("[SceneDetector] Download complete.")
+                from utils.convert_places365 import download_and_convert
+                download_and_convert(cache_path)
             except Exception as e:
-                print(f"[SceneDetector] WARNING: Could not download weights: {e}")
+                print(f"[SceneDetector] WARNING: Could not download/convert weights: {e}")
                 print("[SceneDetector] Continuing with random-initialized fc_inout and fc_attr heads.")
                 return
         self._load_places365_weights(cache_path)
