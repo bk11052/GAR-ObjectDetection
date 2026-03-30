@@ -176,7 +176,14 @@ def main():
     if args.resume:
         print(f"Resuming from {args.resume}")
         ckpt = torch.load(args.resume, map_location=device)
-        model.load_state_dict(ckpt["model_state_dict"], strict=False)
+        state = ckpt["model_state_dict"]
+        # Remove keys with shape mismatch (e.g. gcr.fc_out changed dims)
+        model_state = model.state_dict()
+        for k in list(state.keys()):
+            if k in model_state and state[k].shape != model_state[k].shape:
+                print(f"  Skipping {k}: checkpoint {state[k].shape} vs model {model_state[k].shape}")
+                del state[k]
+        model.load_state_dict(state, strict=False)
         if ckpt["stage"] == args.stage:
             optimizer.load_state_dict(ckpt["optimizer_state_dict"])
             start_epoch = ckpt["epoch"] + 1
