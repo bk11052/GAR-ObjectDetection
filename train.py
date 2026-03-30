@@ -59,15 +59,15 @@ def get_optimizer(model, cfg, stage):
                 param.requires_grad = True
                 params.append(param)
     else:
-        # Stage 2: train GCR + box predictor; freeze backbone and scene detector
+        # Stage 2: train only GCR + box_predictor + scene_node_embed
+        # Freeze backbone, RPN, box_head, and scene_detector
+        trainable = {"gcr.", "box_predictor.", "scene_node_embed."}
         for name, param in model.named_parameters():
-            if "scene_detector" in name:
-                param.requires_grad = False
-            elif "backbone" in name:
-                param.requires_grad = False
-            else:
+            if any(name.startswith(prefix) for prefix in trainable):
                 param.requires_grad = True
                 params.append(param)
+            else:
+                param.requires_grad = False
 
     lr = cfg["training"][f"stage{stage}_lr"]
     optimizer = optim.SGD(

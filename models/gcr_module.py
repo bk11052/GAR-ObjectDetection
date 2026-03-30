@@ -39,8 +39,8 @@ class GCRModule(nn.Module):
         self.W0 = nn.Linear(feature_dim, gcn_hidden, bias=False)
         # W1: gcn_hidden → gcn_out
         self.W1 = nn.Linear(gcn_hidden, gcn_out, bias=False)
-        # Final projection: gcn_out → num_classes
-        self.fc_out = nn.Linear(gcn_out, num_classes)
+        # Final projection: gcn_out → num_classes + 1 (including background)
+        self.fc_out = nn.Linear(gcn_out, num_classes + 1)
 
         # Learnable fusion weights (scalar parameters)
         self.wb = nn.Parameter(torch.tensor(0.0))  # cursory score weight
@@ -200,10 +200,8 @@ class GCRModule(nn.Module):
         w = F.softmax(torch.stack([self.wb, self.wg]), dim=0)  # (2,)
         wb, wg = w[0], w[1]
 
-        # Align dimensions: cursory has O+1 cols, graph has O cols
-        # Apply graph score only to foreground classes (index 1 onwards)
-        fused = cursory_scores.clone()
-        fused[:, 1:] = wb * cursory_scores[:, 1:] + wg * graph_scores
+        # Fuse all classes including background
+        fused = wb * cursory_scores + wg * graph_scores
 
         return fused
 
