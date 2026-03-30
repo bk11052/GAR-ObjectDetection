@@ -123,6 +123,17 @@ class ToTensor:
         return image, target
 
 
+class Normalize:
+    """ImageNet normalization for (image, target) pairs."""
+    def __init__(self, mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, image, target):
+        image = TF.normalize(image, self.mean, self.std)
+        return image, target
+
+
 class RandomHorizontalFlip:
     """Random horizontal flip for both image and bounding boxes."""
     def __init__(self, prob=0.5):
@@ -145,4 +156,5 @@ def get_voc_transforms(train=True):
     if train:
         transforms.append(RandomHorizontalFlip(0.5))
     transforms.append(ToTensor())
+    transforms.append(Normalize())
     return Compose(transforms)
